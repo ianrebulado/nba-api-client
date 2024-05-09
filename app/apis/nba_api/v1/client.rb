@@ -22,6 +22,14 @@ class NbaApi::V1::Client
     )
   end
 
+  def live_games(date)
+    request(
+      http_method: :get,
+      endpoint: 'games',
+      params: { date: }
+    )
+  end
+
   private
 
   def client
