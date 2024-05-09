@@ -6,11 +6,11 @@ class NbaApi::V1::Client
   NBA_API_BASE_URL = 'https://api-nba-v1.p.rapidapi.com'
   API_KEY = Rails.application.credentials.nba_api.api_key
 
-  def get_team(name)
+  def get_team(team_name)
     request(
       http_method: :get,
       endpoint: 'teams',
-      params: { name: }
+      params: { name: team_name }
     )
   end
 
