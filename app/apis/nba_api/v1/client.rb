@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'date'
 require 'faraday'
 
 class NbaApi::V1::Client
@@ -7,14 +8,26 @@ class NbaApi::V1::Client
   API_KEY = Rails.application.credentials.nba_api.api_key
 
   def get_team(team_name)
-    request(
+    response = request(
       http_method: :get,
       endpoint: 'teams',
       params: { name: team_name }
     )
+
+    if response[:status] == 200
+      team_data = response[:body][:response].first
+      team_info = {
+        name: team_data[:name],
+        code: team_data[:code],
+        logo: team_data[:logo],
+        conference: team_data[:leagues][:standard][:conference]
+      }
+    end
+    team_info
   end
 
-  def get_player(name) 
+
+  def get_player(name)
     request(
       http_method: :get,
       endpoint: 'players',
@@ -22,13 +35,15 @@ class NbaApi::V1::Client
     )
   end
 
-  def live_games(date)
+  def live_games
+    puts "date today: #{date_today}"
     request(
       http_method: :get,
       endpoint: 'games',
-      params: { date: }
+      params: { date: date_today }
     )
   end
+
 
   private
 
@@ -61,5 +76,10 @@ class NbaApi::V1::Client
       message: "API ERROR: #{e.message.capitalize}",
       faraday_error_class: e.class
     )
+  end
+
+  def date_today
+    get_date = Date.today
+    get_date.to_date
   end
 end
