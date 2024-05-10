@@ -1,6 +1,4 @@
 # frozen_string_literal: true
-
-require 'date'
 require 'faraday'
 
 class NbaApi::V1::Client
@@ -28,20 +26,30 @@ class NbaApi::V1::Client
 
 
   def get_player(name)
-    request(
+    response = request(
       http_method: :get,
       endpoint: 'players',
       params: { name: }
     )
+
+    if response[:status] == 200
+      players = response[:body][:response]
+      player_names = extract_player_names(players)
+
+      puts "names #{player_names}"
+    end
+    puts "return names: #{player_names}"
+    player_names
   end
 
   def live_games
-    puts "date today: #{date_today}"
-    request(
+    response = request(
       http_method: :get,
       endpoint: 'games',
       params: { date: date_today }
     )
+
+    extract_live_game_info(response)
   end
 
 
@@ -78,8 +86,32 @@ class NbaApi::V1::Client
     )
   end
 
+  def extract_player_names(players)
+    players.map do |player|
+      "#{player[:firstname]} #{player[:lastname]}"
+    end
+  end
+
   def date_today
     get_date = Date.today
     get_date.to_date
   end
+
+  def extract_live_game_info(response)
+    live_games = response[:body][:response]
+  
+    if live_games.nil? || live_games.empty?
+      return []
+    end
+
+    live_games.map do |game|
+      {
+        home_team: game[:teams][:home][:name],
+        home_score: game[:scores][:home][:points],
+        visitor_team: game[:teams][:visitors][:name],
+        visitor_score: game[:scores][:visitors][:points]
+      }
+    end
+  end
+
 end
