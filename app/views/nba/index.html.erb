@@ -50,10 +50,10 @@
   <ul>
     <% @games_today.each do |game| %>
       <li>
-        <strong>Home Team:</strong> <%= game[:home_team] %><br>
-        <strong>Home Score:</strong> <%= game[:home_score] %><br>
-        <strong>Visitor Team:</strong> <%= game[:visitor_team] %><br>
-        <strong>Visitor Score:</strong> <%= game[:visitor_score] %><br>
+         <%= game[:home_team] %><br>
+         <%= game[:home_score] %><br>
+        <%= game[:visitor_team] %><br>
+       <%= game[:visitor_score] %><br>
       </li>
     <% end %>
   </ul>
