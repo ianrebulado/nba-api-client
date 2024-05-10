@@ -1,2 +1,62 @@
-<h1>Nba#index</h1>
-<p>Find me in app/views/nba/index.html.erb</p>
+<h1>NBA </h1>
+
+<!--teams-->
+<%= form_with(url: {controller: "nba", action: "index"}, method: "get") do |form| %>
+  <div class="field">
+    <%= form.label(:team_name, "Team Name:") %>
+    <%= form.text_field(:team_name) %>
+  </div>
+  
+  <%= form.submit("Search") %>
+<% end %>
+
+<% if @team_info %>
+  <h2>Team Information</h2>
+  <p>Name: <%= @team_info[:name] %></p>
+  <p>Code: <%= @team_info[:code] %></p>
+  <img src="<%= @team_info[:logo] %>" alt="Team Logo">
+  <p>Conference: <%= @team_info[:conference] %> </p>
+
+<% elsif params[:team_name].present? %>
+  <p>No team information found for <%= params[:team_name] %>.</p>
+<% end %>
+
+<!--players-->
+
+<%= form_with(url: {controller: "nba", action: "index"}, method: "get") do |form| %>
+  <div class="field">
+    <%= form.label(:player_name, "Player Name:") %>
+    <%= form.text_field(:player_name) %>
+  </div>
+  
+  <%= form.submit("Search Player") %>
+<% end %>
+
+<% if @player_names.present? %>
+  <h2>Players </h2>
+  <ul>
+    <% @player_names.each do |player_name| %>
+      <li><%= player_name %></li>
+    <% end %>
+  </ul>
+<% end %>
+
+<!--games today-->
+
+
+<h2>Games today </h2>
+
+<% if @games_today.present? %>
+  <ul>
+    <% @games_today.each do |game| %>
+      <li>
+        <strong>Home Team:</strong> <%= game[:home_team] %><br>
+        <strong>Home Score:</strong> <%= game[:home_score] %><br>
+        <strong>Visitor Team:</strong> <%= game[:visitor_team] %><br>
+        <strong>Visitor Score:</strong> <%= game[:visitor_score] %><br>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No games today.</p>
+<% end %>
